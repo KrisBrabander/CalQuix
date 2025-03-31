@@ -5,7 +5,7 @@ import base64
 # Laad uitgebreide bibliotheek vanuit extern CSV-bestand
 @st.cache_data
 def laad_profielen():
-    return pd.read_csv("https://raw.githubusercontent.com/example/steel-profiles/master/profielen.csv")
+    return pd.read_csv("https://raw.githubusercontent.com/KrisBrabander/SteelCalc/refs/heads/main/alle_staalprofielen.csv")
 
 profielen_df = laad_profielen()
 profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
