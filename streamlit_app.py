@@ -52,11 +52,16 @@ with tab1:
     lengte = st.number_input("Length (m):", min_value=0.0, step=0.1, value=1.0)
 
     if selected_profile:
+        gewicht_per_meter = profielen_dict[selected_profile]
+        gewicht = gewicht_per_meter * lengte if "plaat" not in selected_profile.lower() else None
+
+        st.markdown("**Calculation:**")
+        st.code(f"Weight = {gewicht_per_meter:.2f} kg/m × {lengte:.2f} m")
+
         if "plaat" in selected_profile.lower():
             breedte = st.number_input("Width (m):", min_value=0.0, step=0.1, value=1.0)
-            gewicht = profielen_dict[selected_profile] * lengte * breedte
-        else:
-            gewicht = profielen_dict[selected_profile] * lengte
+            gewicht = gewicht_per_meter * lengte * breedte
+            st.code(f"Weight = {gewicht_per_meter:.2f} kg/m² × {lengte:.2f} m × {breedte:.2f} m")
 
         st.markdown(f"**Estimated weight:** {gewicht:.2f} kg")
 
@@ -67,6 +72,7 @@ with tab1:
     
     - Over 800 standard profiles
     - Plate support with surface calculation
+    - Formula display for transparency
     - Optimized for quick project estimates and planning
     - Web-based, no installation required
     """)
@@ -81,20 +87,29 @@ with tab2:
     lengte = st.number_input("Length (m)", min_value=0.0, step=0.1, value=1.0, key="lengte_beton")
     breedte = st.number_input("Width (m)", min_value=0.0, step=0.1, value=1.0, key="breedte_beton")
     hoogte = st.number_input("Height (m)", min_value=0.0, step=0.1, value=0.2, key="hoogte_beton")
+    betonklasse = st.selectbox("Concrete strength class:", ["C20/25", "C25/30", "C30/37", "C35/45", "C40/50", "C50/60"])
+    stortverlies = st.slider("Pour loss (%):", 0, 20, 5)
 
     volume = lengte * breedte * hoogte
-    gewicht = volume * 2400  # Dichtheid van beton in kg/m3
+    volume_corr = volume * (1 + stortverlies / 100)
+    gewicht = volume_corr * 2400  # Dichtheid van beton in kg/m3
 
-    st.markdown(f"**Estimated volume:** {volume:.3f} m³")
+    st.markdown("**Calculation:**")
+    st.code(f"Volume = {lengte:.2f} × {breedte:.2f} × {hoogte:.2f} = {volume:.3f} m³")
+    st.code(f"Volume incl. loss = {volume:.3f} × (1 + {stortverlies}% ) = {volume_corr:.3f} m³")
+    st.code(f"Weight = {volume_corr:.3f} m³ × 2400 kg/m³ = {gewicht:.1f} kg")
+
+    st.markdown(f"**Estimated volume (incl. loss):** {volume_corr:.3f} m³")
     st.markdown(f"**Estimated weight:** {gewicht:.1f} kg")
 
     st.markdown("---")
     st.subheader("About Concrete Volume Calculator")
     st.write("""
-    This calculator estimates the volume and weight of concrete needed based on simple dimensions.
+    This calculator estimates the volume and weight of concrete based on geometry and material assumptions.
 
-    - Density used: 2400 kg/m³ (standard for reinforced concrete)
-    - Input dimensions in meters
+    - Concrete density: 2400 kg/m³
+    - Includes pour loss margin
+    - Concrete class selection
     - Suitable for quick site and estimate calculations
     """)
 
