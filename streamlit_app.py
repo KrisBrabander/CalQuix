@@ -14,7 +14,7 @@ profielen_df = laad_profielen()
 profielen_df['Type'] = profielen_df['Profiel'].apply(lambda x: re.split(r'\s(?=\d|Ø)', x)[0])
 profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
 
-st.set_page_config(page_title="SteelCalc Pro", page_icon="", layout="centered")
+st.set_page_config(page_title="Calquix", page_icon="", layout="centered")
 st.markdown("""
     <style>
     .main {
@@ -28,8 +28,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("Engineering Toolbox")
-st.write("A professional suite of calculators for engineers and estimators.")
+st.title("Calquix")
+st.write("A premium suite of structural calculation tools for engineers and estimators.")
 
 # Tabs for different calculators
 tabs = st.tabs(["Steel Weight Calculator", "Concrete Volume Calculator"])
@@ -61,18 +61,17 @@ with tab1:
         st.markdown(f"**Estimated weight:** {gewicht:.2f} kg")
 
     st.markdown("---")
-    st.subheader("About SteelCalc Pro")
+    st.subheader("About Steel Weight Calculator")
     st.write("""
-    SteelCalc Pro is designed for engineers, estimators, and professionals who require accurate weight calculations for steel profiles. 
-    The tool is optimized for reliability and clarity.
-
+    This tool is designed for professionals who require accurate weight calculations for steel profiles.
+    
     - Over 800 standard profiles
     - Plate support with surface calculation
     - Optimized for quick project estimates and planning
     - Web-based, no installation required
     """)
 
-    st.caption("SteelCalc Pro © 2025")
+    st.caption("Calquix © 2025")
 
 # Concrete Volume Calculator
 tab2 = tabs[1]
@@ -92,11 +91,11 @@ with tab2:
     st.markdown("---")
     st.subheader("About Concrete Volume Calculator")
     st.write("""
-    This calculator estimates the volume and weight of concrete needed based on simple dimensions. Useful for foundations, slabs, and walls.
+    This calculator estimates the volume and weight of concrete needed based on simple dimensions.
 
     - Density used: 2400 kg/m³ (standard for reinforced concrete)
     - Input dimensions in meters
     - Suitable for quick site and estimate calculations
     """)
 
-    st.caption("ConcreteCalc © 2025")
+    st.caption("Calquix © 2025")
