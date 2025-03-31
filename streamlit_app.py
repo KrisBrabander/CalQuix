@@ -10,6 +10,9 @@ def laad_profielen():
 profielen_df = laad_profielen()
 profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
 
+# Profielen groeperen op type (bijv. HEA, HEB, IPE)
+profielen_df['Type'] = profielen_df['Profiel'].str.extract(r'^(\w+\s?\w*)')
+
 st.set_page_config(page_title="SteelCalc Pro", page_icon="🧱", layout="centered")
 st.markdown("""
     <style>
@@ -26,11 +29,14 @@ st.markdown("""
 st.title("🧱 SteelCalc Pro – Professional Steel Weight Calculator")
 st.write("Effortlessly calculate the exact weight of steel profiles with precision and speed.")
 
-col1, col2 = st.columns(2)
-with col1:
-    profiel = st.selectbox("🔍 Select Profile", list(profielen_dict.keys()))
-with col2:
-    lengte = st.number_input("📏 Length (meters)", min_value=0.0, step=0.1, value=1.0)
+# Selecteer profieltype
+type_selectie = st.selectbox("📁 Select Profile Type", sorted(profielen_df['Type'].unique()))
+
+# Filter profielen op type
+filtered_df = profielen_df[profielen_df['Type'] == type_selectie]
+profiel = st.selectbox("🔍 Select Profile", filtered_df['Profiel'].tolist())
+
+lengte = st.number_input("📏 Length (meters)", min_value=0.0, step=0.1, value=1.0)
 
 # Speciale berekening voor platen
 if "plaat" in profiel.lower():
