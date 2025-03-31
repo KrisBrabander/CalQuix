@@ -28,41 +28,50 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("SteelCalc Pro – Steel Profile Weight Calculator")
-st.write("A precise and professional tool to calculate the weight of structural steel profiles.")
+st.title("Engineering Toolbox")
+st.write("A professional suite of calculators for engineers and estimators.")
 
-# Profile type and selection
-type_options = sorted(profielen_df['Type'].dropna().unique())
-selected_type = st.selectbox("Select profile category:", type_options)
-filtered_profiles = profielen_df[profielen_df['Type'] == selected_type]['Profiel'].tolist()
+# Tabs for different calculators
+tabs = st.tabs(["Steel Weight Calculator", "Coming Soon"])
 
-if filtered_profiles:
-    selected_profile = st.selectbox("Select profile:", filtered_profiles)
-else:
-    st.warning("No profiles found for this category.")
-    selected_profile = None
+with tabs[0]:
+    st.subheader("Steel Weight Calculator")
 
-lengte = st.number_input("Length (m):", min_value=0.0, step=0.1, value=1.0)
+    type_options = sorted(profielen_df['Type'].dropna().unique())
+    selected_type = st.selectbox("Select profile category:", type_options)
+    filtered_profiles = profielen_df[profielen_df['Type'] == selected_type]['Profiel'].tolist()
 
-if selected_profile:
-    if "plaat" in selected_profile.lower():
-        breedte = st.number_input("Width (m):", min_value=0.0, step=0.1, value=1.0)
-        gewicht = profielen_dict[selected_profile] * lengte * breedte
+    if filtered_profiles:
+        selected_profile = st.selectbox("Select profile:", filtered_profiles)
     else:
-        gewicht = profielen_dict[selected_profile] * lengte
+        st.warning("No profiles found for this category.")
+        selected_profile = None
 
-    st.markdown(f"**Estimated weight:** {gewicht:.2f} kg")
+    lengte = st.number_input("Length (m):", min_value=0.0, step=0.1, value=1.0)
 
-st.markdown("---")
-st.subheader("About SteelCalc Pro")
-st.write("""
-SteelCalc Pro is designed for engineers, estimators, and professionals who require accurate weight calculations for steel profiles. 
-The tool is optimized for reliability and clarity.
+    if selected_profile:
+        if "plaat" in selected_profile.lower():
+            breedte = st.number_input("Width (m):", min_value=0.0, step=0.1, value=1.0)
+            gewicht = profielen_dict[selected_profile] * lengte * breedte
+        else:
+            gewicht = profielen_dict[selected_profile] * lengte
 
-- Over 800 standard profiles
-- Plate support with surface calculation
-- Optimized for quick project estimates and planning
-- Web-based, no installation required
-""")
+        st.markdown(f"**Estimated weight:** {gewicht:.2f} kg")
 
-st.caption("SteelCalc Pro © 2025")
+    st.markdown("---")
+    st.subheader("About SteelCalc Pro")
+    st.write("""
+    SteelCalc Pro is designed for engineers, estimators, and professionals who require accurate weight calculations for steel profiles. 
+    The tool is optimized for reliability and clarity.
+
+    - Over 800 standard profiles
+    - Plate support with surface calculation
+    - Optimized for quick project estimates and planning
+    - Web-based, no installation required
+    """)
+
+    st.caption("SteelCalc Pro © 2025")
+
+with tabs[1]:
+    st.subheader("More calculators coming soon")
+    st.info("Additional tools for structural calculations, concrete volumes, and bolt sizing will be available shortly.")
