@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import base64
+import re
 
 # Laad uitgebreide bibliotheek vanuit extern CSV-bestand
 @st.cache_data
@@ -8,7 +9,9 @@ def laad_profielen():
     return pd.read_csv("https://raw.githubusercontent.com/KrisBrabander/SteelCalc/refs/heads/main/alle_staalprofielen.csv")
 
 profielen_df = laad_profielen()
-profielen_df['Type'] = profielen_df['Profiel'].str.extract(r'^(\w+\s?\w*)')
+
+# Betere type-extractie: neem alles voor de eerste cijfer of maat
+profielen_df['Type'] = profielen_df['Profiel'].apply(lambda x: re.split(r'\s(?=\d|Ø)', x)[0])
 profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
 
 st.set_page_config(page_title="SteelCalc Pro", page_icon="🧱", layout="centered")
