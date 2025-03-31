@@ -8,10 +8,8 @@ def laad_profielen():
     return pd.read_csv("https://raw.githubusercontent.com/KrisBrabander/SteelCalc/refs/heads/main/alle_staalprofielen.csv")
 
 profielen_df = laad_profielen()
-profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
-
-# Profielen groeperen op type (bijv. HEA, HEB, IPE)
 profielen_df['Type'] = profielen_df['Profiel'].str.extract(r'^(\w+\s?\w*)')
+profielen_dict = profielen_df.set_index('Profiel')['Gewicht_per_meter'].to_dict()
 
 st.set_page_config(page_title="SteelCalc Pro", page_icon="🧱", layout="centered")
 st.markdown("""
@@ -29,25 +27,30 @@ st.markdown("""
 st.title("🧱 SteelCalc Pro – Professional Steel Weight Calculator")
 st.write("Effortlessly calculate the exact weight of steel profiles with precision and speed.")
 
-# Selecteer profieltype
-type_selectie = st.selectbox("📁 Select Profile Type", sorted(profielen_df['Type'].unique()))
+# Keuze via selectbox per type en dan het profiel binnen dat type
+type_options = sorted(profielen_df['Type'].dropna().unique())
 
-# Filter profielen op type
-filtered_df = profielen_df[profielen_df['Type'] == type_selectie]
-profiel = st.selectbox("🔍 Select Profile", filtered_df['Profiel'].tolist())
+selected_type = st.selectbox("📁 Select Profile Type", type_options)
+filtered_profiles = profielen_df[profielen_df['Type'] == selected_type]['Profiel'].tolist()
+
+if filtered_profiles:
+    selected_profile = st.selectbox("🔍 Select Profile", filtered_profiles)
+else:
+    st.warning("No profiles available for this type.")
+    selected_profile = None
 
 lengte = st.number_input("📏 Length (meters)", min_value=0.0, step=0.1, value=1.0)
 
-# Speciale berekening voor platen
-if "plaat" in profiel.lower():
-    breedte = st.number_input("📐 Width (meters)", min_value=0.0, step=0.1, value=1.0)
-    gewicht = profielen_dict[profiel] * lengte * breedte
-else:
-    gewicht = profielen_dict[profiel] * lengte
+if selected_profile:
+    if "plaat" in selected_profile.lower():
+        breedte = st.number_input("📐 Width (meters)", min_value=0.0, step=0.1, value=1.0)
+        gewicht = profielen_dict[selected_profile] * lengte * breedte
+    else:
+        gewicht = profielen_dict[selected_profile] * lengte
 
-st.markdown(f"""
-### 🧮 Estimated Weight: `{gewicht:.2f} kg`
-""")
+    st.markdown(f"""
+    ### 🧮 Estimated Weight: `{gewicht:.2f} kg`
+    """)
 
 st.markdown("---")
 st.subheader("📚 What is SteelCalc Pro?")
