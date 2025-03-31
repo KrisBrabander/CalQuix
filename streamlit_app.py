@@ -32,9 +32,11 @@ st.title("Engineering Toolbox")
 st.write("A professional suite of calculators for engineers and estimators.")
 
 # Tabs for different calculators
-tabs = st.tabs(["Steel Weight Calculator", "Coming Soon"])
+tabs = st.tabs(["Steel Weight Calculator", "Concrete Volume Calculator"])
 
-with tabs[0]:
+# Steel Weight Calculator
+tab1 = tabs[0]
+with tab1:
     st.subheader("Steel Weight Calculator")
 
     type_options = sorted(profielen_df['Type'].dropna().unique())
@@ -72,6 +74,29 @@ with tabs[0]:
 
     st.caption("SteelCalc Pro © 2025")
 
-with tabs[1]:
-    st.subheader("More calculators coming soon")
-    st.info("Additional tools for structural calculations, concrete volumes, and bolt sizing will be available shortly.")
+# Concrete Volume Calculator
+tab2 = tabs[1]
+with tab2:
+    st.subheader("Concrete Volume Calculator")
+
+    lengte = st.number_input("Length (m)", min_value=0.0, step=0.1, value=1.0, key="lengte_beton")
+    breedte = st.number_input("Width (m)", min_value=0.0, step=0.1, value=1.0, key="breedte_beton")
+    hoogte = st.number_input("Height (m)", min_value=0.0, step=0.1, value=0.2, key="hoogte_beton")
+
+    volume = lengte * breedte * hoogte
+    gewicht = volume * 2400  # Dichtheid van beton in kg/m3
+
+    st.markdown(f"**Estimated volume:** {volume:.3f} m³")
+    st.markdown(f"**Estimated weight:** {gewicht:.1f} kg")
+
+    st.markdown("---")
+    st.subheader("About Concrete Volume Calculator")
+    st.write("""
+    This calculator estimates the volume and weight of concrete needed based on simple dimensions. Useful for foundations, slabs, and walls.
+
+    - Density used: 2400 kg/m³ (standard for reinforced concrete)
+    - Input dimensions in meters
+    - Suitable for quick site and estimate calculations
+    """)
+
+    st.caption("ConcreteCalc © 2025")
